@@ -16,13 +16,14 @@ import { CardSecondary } from '@components/Card'
 import { useCurrentUser } from '@lib/user'
 import { TopicAnchor } from '@components/Topic'
 import { ALink } from '@components/ALink'
-import Comment from './Comment'
+import CommentList from './CommentList'
 import { usePosts, useRandomPosts } from '@lib/post'
 import { CardPrimary } from '@components/Card/Card'
 import {
   CardPrimarySkeleton,
   CardSecondarySkeleton,
 } from '@components/Skeleton'
+import { Avatar } from '@components/Avatar'
 
 const MoreOptionsDropdown = () => {
   return (
@@ -47,6 +48,7 @@ const PostDetail = ({
   readingTime,
   likesCount,
   bookmarksCount,
+  commentsCount,
   createdAt,
 }) => {
   const { data: { user } = {} } = useCurrentUser()
@@ -62,7 +64,7 @@ const PostDetail = ({
   })
 
   return (
-    <div className="bg-gray-300/10 py-4">
+    <div className="post-details bg-gray-300/10 py-4">
       <Container>
         <div className="flex flex-col items-stretch pb-8 sm:flex-row">
           <div className="relative pb-4 sm:z-elevate sm:w-16 sm:pr-4 ">
@@ -102,9 +104,10 @@ const PostDetail = ({
                 )}
                 <div className="px-6 py-6 sm:px-12">
                   <div className="flex items-center gap-4 pb-6">
-                    <ImageRatio
-                      className="w-10 rounded-full"
+                    <Avatar
                       src={creator.profilePicture}
+                      alt={creator.username}
+                      className="w-10"
                     />
                     <div className="flex flex-col">
                       <div className="text-lg font-bold">
@@ -112,7 +115,7 @@ const PostDetail = ({
                       </div>
                       <div className="flex items-center gap-1.5 text-sm">
                         <span>Posted on {getFormattedDate(createdAt)}</span>
-                        <span className="h-1 w-1 rounded-full bg-gray-800"></span>
+                        <span className="h-1 w-1 rounded-full bg-gray-700"></span>
                         <span>{readingTime} min read</span>
                       </div>
                     </div>
@@ -134,7 +137,7 @@ const PostDetail = ({
                     ></div>
                   </div>
                 </div>
-                <Comment />
+                <CommentList postId={_id} commentsCount={commentsCount} />
               </div>
               <div className="rounded-md border border-gray-300 bg-white shadow">
                 <div className="px-6 py-6 sm:px-12">
@@ -162,10 +165,10 @@ const PostDetail = ({
                     <div className="relative flex items-end gap-2 pb-6">
                       <Link href={`/${creator.username}`}>
                         <a>
-                          <ImageRatio
+                          <Avatar
                             src={creator.profilePicture}
-                            className="w-12 rounded-full bg-white"
-                            alt="Post thumbnail"
+                            alt={creator.username}
+                            className="w-12 bg-white"
                           />
                         </a>
                       </Link>

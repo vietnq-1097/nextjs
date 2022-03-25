@@ -31,7 +31,7 @@ const Write = () => {
   const editorRef = useRef(null)
   const [cover, setCover] = useState('')
   const { setValue, handleSubmit } = useForm()
-  const { loading, toggleLoading } = useLoading()
+  const { loading, setLoading } = useLoading()
   const { error, setError, resetError } = useError()
   const { data: { user } = {} } = useCurrentUser()
   const router = useRouter()
@@ -92,17 +92,17 @@ const Write = () => {
     const content = encodeHtml(contentUnsafe)
 
     setPost({
-      title,
+      title: title.trim(),
       topic,
       content,
     })
 
     try {
-      toggleLoading(true)
+      setLoading('newPost', true)
 
       const formData = new FormData()
 
-      formData.append('title', title)
+      formData.append('title', title.trim())
       formData.append('topic', JSON.stringify(topic))
       formData.append('content', content)
       formData.append('contentUnsafe', contentUnsafe)
@@ -130,7 +130,7 @@ const Write = () => {
         ;(editorRef.current as any).scrollTop = 0
       }
     } finally {
-      toggleLoading(false)
+      setLoading('newPost', false)
     }
   }, [])
 
@@ -198,10 +198,10 @@ const Write = () => {
               </div>
               <div className="mt-6 flex items-center justify-between gap-4">
                 <Button
-                  type={loading ? 'button' : 'submit'}
+                  type={loading['newPost'] ? 'button' : 'submit'}
                   variant="tertiary"
                   className="rounded-md px-3.5 py-2"
-                  loading={loading}
+                  loading={loading['newPost']}
                   loadingBackground="bg-tertiary-900"
                 >
                   Create
